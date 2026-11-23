@@ -1,0 +1,23 @@
+nodo_id,tipo,nombre,x,y
+N00,deposito,Deposito,0.0,0.0
+N01,interseccion,Cruce 01,1.0,0.0
+N02,centro,Centro 01,2.0,0.0
+N03,centro,Centro 02,3.0,0.0
+N04,interseccion,Cruce 02,0.0,1.0
+N05,centro,Centro 03,1.0,1.0
+N06,centro,Centro 04,2.0,1.0
+N07,centro,Centro 05,3.0,1.0
+N08,interseccion,Cruce 03,0.0,2.0
+N09,centro,Centro 06,1.0,2.0
+N10,centro,Centro 07,2.0,2.0
+N11,centro,Centro 08,3.0,2.0
+N12,interseccion,Cruce 04,0.0,3.0
+N13,centro,Centro 09,1.0,3.0
+N14,interseccion,Cruce 05,2.0,3.0
+N15,centro,Centro 10,3.0,3.0
+N16,centro,Centro 11,4.0,0.0
+N17,centro,Centro 12,4.0,1.0
+N18,centro,Centro 13,4.0,2.0
+N19,centro,Centro 14,4.0,3.0
+N20,centro,Centro 15,1.0,4.0
+N21,centro,Centro 16,2.0,4.0

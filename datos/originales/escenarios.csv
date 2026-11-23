@@ -1,0 +1,4 @@
+escenario_id,descripcion,deposito_id,capacidad_cajas,limite_tiempo_min
+E_BASE,Condiciones de referencia,N00,18,130
+E_CAPACIDAD,Menor capacidad de carga,N00,12,130
+E_TIEMPO,Menor tiempo disponible,N00,18,95

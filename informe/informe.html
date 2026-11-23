@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Informe trabajo final ALGABO</title>
+<style>
+  @page { size: A4; margin: 18mm 17mm 18mm 17mm; }
+  :root { --tinta:#1a1a19; --tinta2:#52514e; --linea:#d9d8d2; --azul:#2a78d6; --naranja:#eb6834; --fondo:#ffffff; }
+  body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 10.3pt; line-height: 1.42; color: var(--tinta); background: var(--fondo); margin: 0; }
+  h1 { font-size: 20pt; margin: 0 0 6pt; }
+  h2 { font-size: 13pt; margin: 16pt 0 5pt; border-bottom: 1.5px solid var(--tinta); padding-bottom: 2pt; break-after: avoid; }
+  h3 { font-size: 11pt; margin: 10pt 0 3pt; break-after: avoid; }
+  p { margin: 0 0 6pt; text-align: justify; }
+  ul, ol { margin: 0 0 6pt; padding-left: 18pt; }
+  li { margin-bottom: 2pt; }
+  table { border-collapse: collapse; width: 100%; font-size: 8.8pt; margin: 4pt 0 8pt; break-inside: avoid; }
+  th, td { border-bottom: 1px solid var(--linea); padding: 2.5pt 4pt; text-align: left; vertical-align: top; }
+  th { border-bottom: 1.5px solid var(--tinta); font-weight: 600; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  code, .mono { font-family: Menlo, Consolas, monospace; font-size: 8.4pt; }
+  figure { margin: 6pt 0 10pt; break-inside: avoid; }
+  figure img { width: 100%; border: 1px solid var(--linea); }
+  figcaption { font-size: 8.8pt; color: var(--tinta2); margin-top: 3pt; }
+  .portada { height: 255mm; display: flex; flex-direction: column; justify-content: center; break-after: page; }
+  .portada .sub { color: var(--tinta2); font-size: 11pt; }
+  .caja { border: 1px solid var(--linea); border-left: 4px solid var(--tinta); padding: 6pt 9pt; margin: 8pt 0; break-inside: avoid; }
+  .ia { border-left-color: #b3261e; background: #fbf3f2; }
+  .pendiente { background: #fff6d6; padding: 0 3pt; }
+  .gana { font-weight: 700; }
+  .salto { break-before: page; }
+</style>
+</head>
+<body>
+
+<!-- ======================= PORTADA ======================= -->
+<section class="portada">
+  <p class="sub">Universidad Católica del Uruguay · Algoritmos Avanzados de Búsqueda y Optimización (305580) · 2026-2S · Grupo IA2A</p>
+  <h1>Libros que tienen que llegar: selección de pedidos y recorrido con capacidad y tiempo limitados</h1>
+  <p class="sub">Trabajo final grupal · Comparación de una programación dinámica exacta (Held–Karp con poda) con un greedy de inserción</p>
+  <table style="width:70%;margin-top:18pt">
+    <tr><th>Integrante</th><th>Aportes principales</th></tr>
+    <tr><td><span class="pendiente">[Nombre Apellido 1]</span></td><td><span class="pendiente">[completar]</span></td></tr>
+    <tr><td><span class="pendiente">[Nombre Apellido 2]</span></td><td><span class="pendiente">[completar]</span></td></tr>
+    <tr><td><span class="pendiente">[Nombre Apellido 3]</span></td><td><span class="pendiente">[completar]</span></td></tr>
+    <tr><td><span class="pendiente">[Nombre Apellido 4]</span></td><td><span class="pendiente">[completar]</span></td></tr>
+  </table>
+  <p class="sub">Docente: Diego Gabriel Fernández Raiz · Entrega: 30 de noviembre de 2026</p>
+  <div class="caja ia">
+    <b>Versión de respaldo generada íntegramente por IA.</b> Este informe, el código, la adaptación de datos y
+    los resultados de esta versión fueron producidos por Claude Opus 5.5 (Anthropic) a través de Claude Code
+    el 23/11/2026, a pedido de un integrante del grupo, como base de respaldo. Ver la sección 7 y
+    <code>DECLARACION_IA.md</code>. El grupo debe revisar, verificar y reescribir lo que corresponda antes de entregar.
+  </div>
+</section>
+
+<!-- ======================= 1 PROBLEMA ======================= -->
+<h2>1. Problema y restricciones</h2>
+<p>Una red ficticia de bibliotecas comunitarias tiene un vehículo en un depósito y pedidos de libros. Cada pedido
+tiene un centro de entrega, una cantidad de cajas, una prioridad y minutos de descarga. Hay que decidir
+<b>qué pedidos atender, en qué orden y por qué tramos viajar</b>, saliendo y volviendo al depósito.</p>
+<ul>
+  <li><b>Entradas:</b> la red no dirigida (nodos y conexiones con minutos de viaje), los pedidos y un escenario
+  (depósito, capacidad en cajas, límite de tiempo en minutos).</li>
+  <li><b>Decisiones:</b> el subconjunto de pedidos atendidos, el orden de descarga y la secuencia completa de nodos
+  (con nodos de paso y el regreso).</li>
+  <li><b>Objetivo:</b> maximizar la suma de prioridades de los pedidos atendidos completos; ante empate, minimizar el
+  tiempo total (viaje + servicio).</li>
+  <li><b>Restricciones:</b> suma de cajas ≤ capacidad (todo se carga al inicio); viaje + servicio ≤ límite; cada pedido
+  se atiende a lo sumo una vez y es indivisible; solo se viaja por conexiones existentes (abiertas); se pueden
+  repetir nodos y tramos, y pasar por un centro no implica atender su pedido.</li>
+</ul>
+<p>Es un problema de <b>orientación con capacidad</b>: combina una mochila 0/1 (qué pedidos caben, tema 4) con un
+problema de recorrido tipo viajante (en qué orden, tema 4, Held–Karp) sobre una red donde los tiempos entre centros
+salen de caminos mínimos (tema 2, Dijkstra). No se puede resolver la selección y el recorrido por separado: el
+tiempo que cuesta un pedido depende de qué otros pedidos se visitan cerca.</p>
+<p><b>Representación.</b> Lista de adyacencia de un grafo no dirigido (cada fila de <code>conexiones.csv</code> se agrega
+en ambos sentidos). Un <b>plan</b> se representa como en el <code>LEEME.md</code>: <code>escenario_id</code>, lista de
+<code>pedidos_atendidos</code> y <code>recorrido</code> (lista ordenada de nodos de depósito a depósito).</p>
+
+<!-- ======================= 2 DATOS ======================= -->
+<h2>2. Datos: elección, preparación y adaptación</h2>
+<h3>2.1 Dataset de partida y controles</h3>
+<p>Se partió del paquete <code>Datos_Sinteticos_Trabajo_Final_ALGABO.zip</code> (16 nodos, 29 conexiones, 10 pedidos,
+3 escenarios; todos los datos son <b>sintéticos</b>, sin correspondencia con lugares ni personas reales; uso
+académico). Se copió sin modificar a <code>datos/originales/</code>. El módulo <code>datos.py</code> valida: ids únicos,
+tipos válidos y un único depósito; extremos de conexiones existentes, tiempos enteros positivos, sin lazos ni
+conexiones duplicadas; cada pedido en un nodo existente de tipo centro, un pedido por centro, cajas/prioridad/servicio
+positivos; escenarios con depósito válido y referencias existentes; y, al construir cada instancia, que todo centro
+con pedido sea alcanzable desde el depósito. <b>Resultado:</b> 0 problemas en los datos originales y en los adaptados.
+No hay valores faltantes. Las coordenadas x,y solo se usan para dibujar; los tiempos válidos son los de
+<code>conexiones.csv</code>.</p>
+
+<h3>2.2 Pregunta del grupo y adaptación</h3>
+<div class="caja"><b>Pregunta:</b> ¿cuándo conviene el método exacto (DP) y cuándo alcanza con el greedy?
+¿Cambia la respuesta si (a) se cierra un tramo de la red con el tiempo ajustado, o (b) la red crece con un barrio
+nuevo, más lejano, con más pedidos?</div>
+<p>Para estudiarla, <code>src/preparar_datos.py</code> genera <code>datos/adaptados/</code> a partir del original (reproducible,
+sin tocar el original):</p>
+<ol>
+  <li><b>Barrio nuevo (sintético):</b> 6 centros N16–N21 al este y al norte, 11 conexiones C30–C40 (5–8 min, dentro del
+  rango original de 5–10) y 6 pedidos P11–P16 (2–6 cajas, prioridad 9–25, servicio 4–9: el mismo rango que los
+  originales). Total: 22 nodos, 40 conexiones, 16 pedidos.</li>
+  <li><b>Dos columnas nuevas en <code>escenarios.csv</code>:</b> <code>pedidos_incluidos</code> (P01-P10 o P01-P16) y
+  <code>conexiones_cerradas</code>. Así los escenarios originales siguen idénticos y se puede cambiar una condición por vez.</li>
+  <li><b>Tres escenarios nuevos:</b> <code>E_CIERRE</code> (E_TIEMPO con la conexión C25 N00–N05 cerrada: es una de las
+  tres salidas del depósito y la usan los planes de ambos métodos en E_TIEMPO); <code>E_AMPLIADO</code> (16 pedidos,
+  24 cajas, 160 min); <code>E_AMPLIADO_BASE</code> (16 pedidos con los límites de E_BASE, para aislar el efecto de tener
+  más opciones).</li>
+</ol>
+<p>Además se hicieron dos experimentos auxiliares: (i) <b>análisis de cierres</b>, que cierra cada una de las 29
+conexiones originales de a una en E_TIEMPO, para no depender de un único cierre elegido a mano; (ii)
+<b>escalabilidad</b>, con instancias aleatorias en una grilla de 5×5 (tiempos 5–10 min) con 8 a 24 pedidos, semillas
+1, 2 y 3, en dos familias: <i>ajustada</i> (18 cajas, 130 min, como E_BASE) y <i>holgada</i> (30 cajas, 200 min).</p>
+<p><b>Limitaciones de los datos:</b> son sintéticos e inventados (también la adaptación), con tiempos fijos, sin
+tráfico ni ventanas horarias. Las conclusiones son sobre el comportamiento de los algoritmos en instancias de este
+tipo y tamaño, no sobre una red real. Las prioridades son puntajes arbitrarios.</p>
+
+<!-- ======================= 3 MÉTODOS ======================= -->
+<h2>3. Propuesta y referencia</h2>
+<p><b>Parte común (<code>grafo.py</code>).</b> Ambos métodos usan Dijkstra (heap con <code>heapq</code> y entradas obsoletas;
+desempate por id de nodo) desde el depósito y desde cada centro con pedido. Así se obtienen el tiempo mínimo entre
+cada par de “paradas” y el camino nodo por nodo, que luego se usa para escribir el recorrido completo. Esta reducción es
+correcta porque entre dos descargas consecutivas ningún recorrido válido (aunque repita nodos) tarda menos que el
+camino mínimo.</p>
+
+<h3>3.1 Referencia: greedy de inserción (<code>referencia_greedy.py</code>)</h3>
+<p>Empieza con el plan vacío (depósito → depósito). En cada paso calcula, para cada pedido no elegido que entra en
+la capacidad, su mejor posición dentro del orden actual (inserción más barata) y los <b>minutos extra</b> que
+agrega (desvío de viaje + servicio). Elige el pedido con mayor <b>rentabilidad = prioridad / minutos extra</b> que no
+haga pasar el límite (desempate: menor extra, luego menor id). Se detiene cuando ningún pedido entra.
+Relación con el curso: decisión voraz con una función de evaluación local, como Greedy Best-First (tema 3).
+<b>Garantía:</b> el plan siempre es factible. <b>Límites:</b> no garantiza el óptimo y no deshace decisiones;
+la rentabilidad mira el tiempo pero <b>no las cajas</b>. Costo ≈ n³ operaciones.</p>
+
+<h3>3.2 Propuesta: programación dinámica exacta, Held–Karp con poda (<code>propuesta_dp.py</code>)</h3>
+<p>Es el Held–Karp de la ADI 1, extendido a elegir subconjuntos. Cada celda de la tabla guarda: “el mínimo de
+minutos de viaje para salir del depósito, atender exactamente los pedidos del conjunto S y quedar parado en el
+pedido j”, junto con el pedido anterior a j (para reconstruir el orden). El conjunto S se guarda como un número
+binario (bit i = 1 si el pedido i está). Desde la celda (S, j) se pasa a (S + k, k) sumando el tiempo mínimo de j a k.
+La tabla se llena por capas (conjuntos de 1 pedido, de 2, …).</p>
+<p><b>Poda</b> (idea de ramificación y poda, tema 5): no se crea la celda (S + k, k) si las cajas superan la capacidad,
+o si <i>viaje hasta k + servicio de S + k + volver directo desde k</i> supera el límite. “Volver directo” es una cota
+optimista válida, porque cualquier continuación tarda al menos eso; por lo tanto la poda nunca descarta un plan
+factible. Al final, para cada conjunto alcanzado se suma la vuelta al depósito y se elige el de mayor prioridad
+y, ante empate, menor tiempo total.</p>
+<p><b>Garantía:</b> el plan es <b>óptimo</b> (revisa todos los órdenes de todos los subconjuntos no podados).
+<b>Límite:</b> la tabla crece como 2ⁿ·n en el peor caso; con límites holgados la poda ayuda poco.</p>
+
+<table>
+  <tr><th>Decisión</th><th>Referencia (greedy)</th><th>Propuesta (DP Held–Karp + poda)</th></tr>
+  <tr><td>Selección</td><td>Un pedido por vez, por prioridad/minutos extra; nunca se arrepiente</td><td>Todos los subconjuntos que caben; elige el mejor</td></tr>
+  <tr><td>Orden y recorrido</td><td>Inserción más barata en el orden actual + caminos de Dijkstra</td><td>Mejor orden de cada subconjunto (DP) + caminos de Dijkstra</td></tr>
+  <tr><td>Garantía / límite</td><td>Factible; sin garantía de óptimo; muy rápido</td><td>Óptimo; costo exponencial en el peor caso</td></tr>
+</table>
+
+<!-- ======================= 4 VERIFICACIÓN ======================= -->
+<h2>4. Verificación</h2>
+<p><b>Verificador independiente (<code>verificador.py</code>).</b> Recibe el plan crudo y recalcula todo desde
+<code>conexiones.csv</code>, sin usar Dijkstra ni la matriz de distancias: inicio y fin en el depósito, cada paso por una
+conexión existente y abierta, pedidos distintos y del escenario, centro de cada pedido presente en el recorrido,
+cajas ≤ capacidad y total ≤ límite. Todos los planes informados pasan por él.</p>
+<p><b>Caso chico a mano</b> (red de la guía del taller: N00 –10– N05 –6– N09, capacidad 5; P03: 2 cajas, 8 puntos,
+4 min; P06: 3 cajas, 13 puntos, 5 min):</p>
+<table>
+  <tr><th>Selección</th><th class="n">Viaje</th><th class="n">Servicio</th><th class="n">Total</th><th class="n">Prioridad</th></tr>
+  <tr><td>Solo P03 (N00-N05-N00)</td><td class="n">20</td><td class="n">4</td><td class="n">24</td><td class="n">8</td></tr>
+  <tr><td>Solo P06 (N00-N05-N09-N05-N00, pasa por N05 sin descargar)</td><td class="n">32</td><td class="n">5</td><td class="n">37</td><td class="n">13</td></tr>
+  <tr><td>P03 y P06 (mismo recorrido, descarga en N05)</td><td class="n">32</td><td class="n">9</td><td class="n">41</td><td class="n">21</td></tr>
+</table>
+<p>Con límite 40 lo mejor es solo P06 (13 puntos); con 41, ambos (21 puntos, justo en el límite: la igualdad está
+permitida). Ambos métodos devuelven exactamente esto (<code>pruebas.py</code>).</p>
+<p><b>Fuerza bruta.</b> En los cuatro escenarios de 10 pedidos se probó por separado, con una búsqueda recursiva
+que enumera todas las secuencias factibles, cuál es el óptimo. La DP coincide en prioridad y tiempo total en los
+cuatro; el greedy nunca lo supera. <b>Planes inválidos:</b> el verificador rechaza seis planes armados a propósito
+(21 cajas con capacidad 18; salto N00→N09 sin conexión; sin regreso; pedido cuyo centro no se visita; uso de la
+conexión cerrada C25 en E_CIERRE; 96 min con límite 95).</p>
+<p><b>Ejemplo recalculado a mano</b> (propuesta en E_BASE): recorrido N00-N01-N06-N11-N15-N14-N13-N09-N05-N00 =
+7+9+10+8+5+7+5+6+10 = <b>67 min</b> de viaje; servicio P08 6 + P10 10 + P09 4 + P06 5 + P03 4 = <b>29</b>; total 96 ≤ 130;
+cajas 4+7+2+3+2 = <b>18</b> ≤ 18; prioridad 18+30+10+13+8 = <b>79</b>. Pasa por N09 y N05 una vez cada uno y los atiende;
+pasa por N14 (cruce) solo de tránsito.</p>
+
+<!-- ======================= 5 RESULTADOS ======================= -->
+<h2>5. Diseño de la comparación y resultados</h2>
+<p><b>Condiciones comparables:</b> en cada escenario ambos métodos reciben los mismos datos, restricciones y criterio
+(primero factibilidad, luego prioridad, luego tiempo total). Ninguno usa azar, así que no hay variabilidad entre
+ejecuciones del plan; las semillas solo se usan para generar las instancias de escalabilidad. <b>Tiempo de
+ejecución:</b> <code>time.perf_counter()</code> en milisegundos, incluyendo Dijkstra + método, mediana de 5 repeticiones
+(una sola en escalabilidad); Python 3.15.2 (CPython), macOS 27.3, Apple M5 Pro. <b>Ese tiempo del programa no tiene
+nada que ver con los minutos del plan.</b></p>
+
+<table>
+  <tr><th>Escenario</th><th>Método</th><th>Fact.</th><th>Pedidos (orden de descarga)</th><th class="n">Prior.</th><th class="n">Cajas</th><th class="n">Viaje</th><th class="n">Serv.</th><th class="n">Total</th><th class="n">ms</th></tr>
+  <tr><td>E_BASE<br>18 cajas · 130 min</td><td>Referencia</td><td>sí</td><td>P06 P03 P04 P05 P01</td><td class="n">71</td><td class="n">18</td><td class="n">59</td><td class="n">29</td><td class="n">88</td><td class="n">0,16</td></tr>
+  <tr><td></td><td class="gana">Propuesta</td><td>sí</td><td>P08 P10 P09 P06 P03</td><td class="n gana">79</td><td class="n">18</td><td class="n">67</td><td class="n">29</td><td class="n">96</td><td class="n">2,0</td></tr>
+  <tr><td>E_CAPACIDAD<br>12 · 130</td><td>Referencia</td><td>sí</td><td>P03 P04 P05</td><td class="n">47</td><td class="n">12</td><td class="n">45</td><td class="n">19</td><td class="n">64</td><td class="n">0,13</td></tr>
+  <tr><td></td><td class="gana">Propuesta</td><td>sí</td><td>P10 P09 P06</td><td class="n gana">53</td><td class="n">12</td><td class="n">63</td><td class="n">19</td><td class="n">82</td><td class="n">0,56</td></tr>
+  <tr><td>E_TIEMPO<br>18 · 95</td><td>Referencia</td><td>sí</td><td>P06 P03 P04 P05 P01</td><td class="n">71</td><td class="n">18</td><td class="n">59</td><td class="n">29</td><td class="n">88</td><td class="n">0,14</td></tr>
+  <tr><td></td><td class="gana">Propuesta</td><td>sí</td><td>P09 P10 P08 P07</td><td class="n gana">78</td><td class="n">18</td><td class="n">68</td><td class="n">27</td><td class="n">95</td><td class="n">1,4</td></tr>
+  <tr><td>E_CIERRE*<br>18 · 95 · sin C25</td><td>Referencia</td><td>sí</td><td>P01 P04 P05 P02</td><td class="n">69</td><td class="n">18</td><td class="n">52</td><td class="n">28</td><td class="n">80</td><td class="n">0,14</td></tr>
+  <tr><td></td><td class="gana">Propuesta</td><td>sí</td><td>P06 P10 P08 P04</td><td class="n gana">76</td><td class="n">18</td><td class="n">65</td><td class="n">27</td><td class="n">92</td><td class="n">1,2</td></tr>
+  <tr><td>E_AMPLIADO*<br>24 · 160 · 16 ped.</td><td>Referencia</td><td>sí</td><td>P03 P04 P08 P05 P02 P01</td><td class="n">95</td><td class="n">24</td><td class="n">61</td><td class="n">38</td><td class="n">99</td><td class="n">0,26</td></tr>
+  <tr><td></td><td class="gana">Propuesta</td><td>sí</td><td>P08 P14 P10 P15 P09 P06</td><td class="n gana">107</td><td class="n">24</td><td class="n">87</td><td class="n">38</td><td class="n">125</td><td class="n">110</td></tr>
+  <tr><td>E_AMPLIADO_BASE*<br>18 · 130 · 16 ped.</td><td>Referencia</td><td>sí</td><td>P06 P03 P04 P05 P01</td><td class="n">71</td><td class="n">18</td><td class="n">59</td><td class="n">29</td><td class="n">88</td><td class="n">0,23</td></tr>
+  <tr><td></td><td class="gana">Propuesta</td><td>sí</td><td>P09 P15 P10 P13 P08</td><td class="n gana">81</td><td class="n">18</td><td class="n">87</td><td class="n">29</td><td class="n">116</td><td class="n">23</td></tr>
+</table>
+<p style="font-size:8.8pt;color:var(--tinta2)">* Escenarios de la adaptación. Minutos del plan: viaje, servicio y total. “ms” = mediana del tiempo de ejecución del programa.
+Los recorridos completos nodo por nodo (con nodos de paso y regreso) están en <code>resultados/resultados.csv</code> y
+<code>resultados/planes.json</code>. Todos los planes son factibles según el verificador independiente.</p>
+
+<figure>
+  <img src="../resultados/red_E_BASE.svg" alt="Red con los recorridos de ambos métodos en E_BASE">
+  <figcaption>Figura 1. E_BASE. Izquierda, referencia: elige centros cercanos (P03, P06, P04, P05, P01), llena las 18 cajas y
+  usa solo 88 de 130 min. Derecha, propuesta: llega hasta P10 (N15, 30 puntos, el pedido de mayor prioridad), también con
+  18 cajas, en 96 min.</figcaption>
+</figure>
+
+<h3>5.1 Análisis de diferencias</h3>
+<p><b>Datos originales (E_BASE, E_CAPACIDAD, E_TIEMPO).</b> La propuesta gana por 6 a 8 puntos (9–11 %). La causa
+es visible en la tabla: en los tres escenarios la restricción que limita es la <b>capacidad</b> (los dos métodos
+terminan con las cajas llenas), y al greedy le sobran entre 7 y 66 minutos. La rentabilidad del greedy mide
+prioridad por minuto, pero el recurso escaso son las cajas: gasta cajas en pedidos cercanos de poca prioridad
+(P03, P06, P01) y cuando llega a P10 ya no tiene lugar. La DP evalúa conjuntos completos y no tiene ese sesgo.
+En E_TIEMPO la propuesta usa exactamente los 95 minutos.</p>
+<p><b>Cierre de un tramo.</b> En E_CIERRE la propuesta baja de 78 a 76 puntos; la referencia, de 71 a 69. En el
+análisis de los 29 cierres posibles en E_TIEMPO (<code>resultados/cierres.csv</code>), el óptimo nunca baja más de
+2 puntos (78 → 76): la red tiene caminos alternativos parecidos. El greedy es más sensible e irregular: con C18
+(N05–N09) cerrada cae de 71 a 58 (−13), con C02 a 65 y con C15 a 66: son tramos que usaba su plan, y al
+quitarlos el greedy no encuentra una alternativa equivalente. Un cambio chico en las distancias cambia su primera elección y arrastra el resto. Responde la parte
+(a) de la pregunta: el exacto es más robusto ante cierres.</p>
+<p><b>Red ampliada.</b> Con los mismos límites de E_BASE pero 16 pedidos (E_AMPLIADO_BASE), la propuesta mejora de 79
+a 81 puntos usando P15 y P13 del barrio nuevo, mientras que el greedy repite exactamente el plan de E_BASE (71): sus
+primeras elecciones son siempre las cercanas, y el barrio lejano nunca le parece rentable. El recorrido de la DP pasa por
+N21 y N19 sin descargar (P16 y P14 no se eligen): pasar no es atender. Con más recursos (E_AMPLIADO), 107 contra 95.
+El costo de la DP sube de 2 ms a 23–110 ms (14 612 y 67 444 celdas), todavía despreciable para planificar un reparto.</p>
+
+<figure>
+  <img src="../resultados/escalabilidad.svg" alt="Tiempo de ejecución según cantidad de pedidos">
+  <figcaption>Figura 2. Escalabilidad (instancias aleatorias, semillas 1–3, mediana). El greedy se mantiene por debajo de 1 ms.
+  La DP crece con la cantidad de pedidos, y mucho más cuando los límites son holgados (poda menos).</figcaption>
+</figure>
+
+<p><b>Escalabilidad</b> (<code>resultados/escalabilidad.csv</code>). Con límites <i>ajustados</i> la poda mantiene la DP
+por debajo de 0,1 s incluso con 24 pedidos (mediana 42 ms; entre 33 y 98 ms según la semilla), porque solo caben
+4–6 pedidos por plan. Con límites <i>holgados</i> la tabla explota: mediana de 172 ms con 16 pedidos, 1,2 s con 20 y
+6,1 s con 24 (entre 3,8 y 15,8 s según la semilla, hasta 6 millones de celdas). Crece aproximadamente ×3 cada dos
+pedidos, así que con unos 30 pedidos y límites holgados ya tardaría minutos en Python. Mientras tanto, el greedy queda
+en promedio un 22 % (ajustado) y un 23 % (holgado) por debajo del óptimo, con mucha variabilidad (de 0 % a 58 %); alcanzó
+el óptimo en solo 3 de 54 instancias. Estos números valen para estas instancias sintéticas; no se generalizan.</p>
+
+<!-- ======================= 6 CONCLUSIONES ======================= -->
+<h2>6. Conclusiones y recomendación</h2>
+<ul>
+  <li><b>Recomendación para este caso:</b> usar la <b>propuesta (DP exacta con poda)</b>. En los seis escenarios da el
+  óptimo demostrado (confirmado por fuerza bruta en los de 10 pedidos), supera al greedy por 6 a 12 puntos y
+  tarda como mucho 0,11 s.</li>
+  <li><b>Cuándo conviene la referencia:</b> si hubiera muchos pedidos (≈ 25–30 o más) con límites holgados, o si hiciera
+  falta replanificar al instante. También sirve como plan factible inicial o como cota inferior. Hay que aceptar que
+  puede quedar lejos del óptimo (22 % en promedio en nuestras pruebas).</li>
+  <li><b>Factibilidad vs. optimalidad:</b> ambos métodos siempre dieron planes factibles; solo la DP tiene optimalidad
+  demostrada. Que el greedy coincida en algún caso no prueba nada en general.</li>
+  <li><b>Limitaciones:</b> datos sintéticos; un solo vehículo y una salida; tiempos fijos; mediciones en una sola
+  máquina; el criterio del greedy es uno de muchos posibles.</li>
+  <li><b>Mejoras posibles:</b> (1) un greedy que tenga en cuenta las cajas (por ejemplo, prioridad / (minutos extra
+  normalizados + cajas normalizadas)); (2) mejorar el plan del greedy con búsqueda local o temple simulado (tema 3:
+  agregar, quitar o intercambiar pedidos); (3) para instancias grandes, ramificación y poda con una cota mejor
+  (mochila fraccionaria sobre las cajas restantes) o un algoritmo genético (tema 6).</li>
+</ul>
+<p><b>Referencias y apoyos.</b> Apuntes y presentaciones de cátedra ALGABO 2026 (temas 2–5); ADI 1 (Held–Karp);
+consigna y <code>LEEME.md</code> del dataset; documentación de Python (<code>heapq</code>, <code>csv</code>).
+Todo el código es propio de esta versión (generado con IA, ver sección 7); solo se usa la biblioteca estándar.</p>
+
+<!-- ======================= 7 IA ======================= -->
+<h2>7. Declaración de uso de IA</h2>
+<div class="caja ia">
+<p><b>Herramienta:</b> Claude Opus 5.5 (Anthropic), usada a través de Claude Code (app de escritorio), el 23/11/2026.</p>
+<p><b>Finalidad:</b> a pedido de un integrante, la IA <b>generó una versión completa de respaldo</b>: adaptación de datos,
+todo el código (<code>src/*.py</code>), la ejecución de los experimentos, este informe, el README y el guion del video.
+El grupo la usará como base para trabajar y reescribir.</p>
+<p><b>Parte afectada:</b> todo el entregable de esta versión. Cada archivo de código tiene la marca
+<code>[Generado por IA …]</code> en su encabezado.</p>
+<p><b>Evidencias:</b> exportación de la conversación completa (prompts y respuestas) en <code>evidencias_IA/</code>.
+El pedido textual fue: <i>“i want you to do everything, so i have a floor to stand on […] in this version in which
+you'll do everything, say it, since it's mandatory to describe the use of ai”</i>.</p>
+<p><b>Intervención y verificación del grupo:</b> <span class="pendiente">[completar: qué se revisó, qué se modificó o
+descartó, y cómo se comprobó, por ejemplo: recálculo a mano de E_BASE, ejecución de <code>pruebas.py</code>, revisión
+línea por línea de cada función por parte de cada integrante]</span>. Verificaciones automáticas incluidas en esta
+versión: <code>pruebas.py</code> (caso chico a mano, fuerza bruta y planes inválidos) y el verificador independiente.</p>
+</div>
+
+</body>
+</html>

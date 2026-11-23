@@ -1,0 +1,463 @@
+{
+ "E_BASE|referencia": {
+  "escenario_id": "E_BASE",
+  "metodo": "Referencia: greedy de inserción",
+  "pedidos_atendidos": [
+   "P01",
+   "P03",
+   "P04",
+   "P05",
+   "P06"
+  ],
+  "orden_de_descarga": [
+   "P06",
+   "P03",
+   "P04",
+   "P05",
+   "P01"
+  ],
+  "recorrido": [
+   "N00",
+   "N05",
+   "N09",
+   "N05",
+   "N06",
+   "N07",
+   "N06",
+   "N02",
+   "N01",
+   "N00"
+  ],
+  "verificacion": {
+   "factible": true,
+   "errores": [],
+   "prioridad": 71,
+   "cajas": 18,
+   "viaje": 59,
+   "servicio": 29,
+   "total": 88
+  }
+ },
+ "E_BASE|propuesta": {
+  "escenario_id": "E_BASE",
+  "metodo": "Propuesta: DP Held–Karp con poda",
+  "pedidos_atendidos": [
+   "P03",
+   "P06",
+   "P08",
+   "P09",
+   "P10"
+  ],
+  "orden_de_descarga": [
+   "P08",
+   "P10",
+   "P09",
+   "P06",
+   "P03"
+  ],
+  "recorrido": [
+   "N00",
+   "N01",
+   "N06",
+   "N11",
+   "N15",
+   "N14",
+   "N13",
+   "N09",
+   "N05",
+   "N00"
+  ],
+  "verificacion": {
+   "factible": true,
+   "errores": [],
+   "prioridad": 79,
+   "cajas": 18,
+   "viaje": 67,
+   "servicio": 29,
+   "total": 96
+  }
+ },
+ "E_CAPACIDAD|referencia": {
+  "escenario_id": "E_CAPACIDAD",
+  "metodo": "Referencia: greedy de inserción",
+  "pedidos_atendidos": [
+   "P03",
+   "P04",
+   "P05"
+  ],
+  "orden_de_descarga": [
+   "P03",
+   "P04",
+   "P05"
+  ],
+  "recorrido": [
+   "N00",
+   "N05",
+   "N06",
+   "N07",
+   "N06",
+   "N01",
+   "N00"
+  ],
+  "verificacion": {
+   "factible": true,
+   "errores": [],
+   "prioridad": 47,
+   "cajas": 12,
+   "viaje": 45,
+   "servicio": 19,
+   "total": 64
+  }
+ },
+ "E_CAPACIDAD|propuesta": {
+  "escenario_id": "E_CAPACIDAD",
+  "metodo": "Propuesta: DP Held–Karp con poda",
+  "pedidos_atendidos": [
+   "P06",
+   "P09",
+   "P10"
+  ],
+  "orden_de_descarga": [
+   "P10",
+   "P09",
+   "P06"
+  ],
+  "recorrido": [
+   "N00",
+   "N05",
+   "N09",
+   "N14",
+   "N15",
+   "N14",
+   "N13",
+   "N09",
+   "N05",
+   "N00"
+  ],
+  "verificacion": {
+   "factible": true,
+   "errores": [],
+   "prioridad": 53,
+   "cajas": 12,
+   "viaje": 63,
+   "servicio": 19,
+   "total": 82
+  }
+ },
+ "E_TIEMPO|referencia": {
+  "escenario_id": "E_TIEMPO",
+  "metodo": "Referencia: greedy de inserción",
+  "pedidos_atendidos": [
+   "P01",
+   "P03",
+   "P04",
+   "P05",
+   "P06"
+  ],
+  "orden_de_descarga": [
+   "P06",
+   "P03",
+   "P04",
+   "P05",
+   "P01"
+  ],
+  "recorrido": [
+   "N00",
+   "N05",
+   "N09",
+   "N05",
+   "N06",
+   "N07",
+   "N06",
+   "N02",
+   "N01",
+   "N00"
+  ],
+  "verificacion": {
+   "factible": true,
+   "errores": [],
+   "prioridad": 71,
+   "cajas": 18,
+   "viaje": 59,
+   "servicio": 29,
+   "total": 88
+  }
+ },
+ "E_TIEMPO|propuesta": {
+  "escenario_id": "E_TIEMPO",
+  "metodo": "Propuesta: DP Held–Karp con poda",
+  "pedidos_atendidos": [
+   "P07",
+   "P08",
+   "P09",
+   "P10"
+  ],
+  "orden_de_descarga": [
+   "P09",
+   "P10",
+   "P08",
+   "P07"
+  ],
+  "recorrido": [
+   "N00",
+   "N05",
+   "N09",
+   "N13",
+   "N14",
+   "N15",
+   "N11",
+   "N10",
+   "N05",
+   "N00"
+  ],
+  "verificacion": {
+   "factible": true,
+   "errores": [],
+   "prioridad": 78,
+   "cajas": 18,
+   "viaje": 68,
+   "servicio": 27,
+   "total": 95
+  }
+ },
+ "E_CIERRE|referencia": {
+  "escenario_id": "E_CIERRE",
+  "metodo": "Referencia: greedy de inserción",
+  "pedidos_atendidos": [
+   "P01",
+   "P02",
+   "P04",
+   "P05"
+  ],
+  "orden_de_descarga": [
+   "P01",
+   "P04",
+   "P05",
+   "P02"
+  ],
+  "recorrido": [
+   "N00",
+   "N01",
+   "N02",
+   "N06",
+   "N07",
+   "N03",
+   "N02",
+   "N01",
+   "N00"
+  ],
+  "verificacion": {
+   "factible": true,
+   "errores": [],
+   "prioridad": 69,
+   "cajas": 18,
+   "viaje": 52,
+   "servicio": 28,
+   "total": 80
+  }
+ },
+ "E_CIERRE|propuesta": {
+  "escenario_id": "E_CIERRE",
+  "metodo": "Propuesta: DP Held–Karp con poda",
+  "pedidos_atendidos": [
+   "P04",
+   "P06",
+   "P08",
+   "P10"
+  ],
+  "orden_de_descarga": [
+   "P06",
+   "P10",
+   "P08",
+   "P04"
+  ],
+  "recorrido": [
+   "N00",
+   "N04",
+   "N05",
+   "N09",
+   "N14",
+   "N15",
+   "N11",
+   "N06",
+   "N01",
+   "N00"
+  ],
+  "verificacion": {
+   "factible": true,
+   "errores": [],
+   "prioridad": 76,
+   "cajas": 18,
+   "viaje": 65,
+   "servicio": 27,
+   "total": 92
+  }
+ },
+ "E_AMPLIADO|referencia": {
+  "escenario_id": "E_AMPLIADO",
+  "metodo": "Referencia: greedy de inserción",
+  "pedidos_atendidos": [
+   "P01",
+   "P02",
+   "P03",
+   "P04",
+   "P05",
+   "P08"
+  ],
+  "orden_de_descarga": [
+   "P03",
+   "P04",
+   "P08",
+   "P05",
+   "P02",
+   "P01"
+  ],
+  "recorrido": [
+   "N00",
+   "N05",
+   "N06",
+   "N11",
+   "N07",
+   "N03",
+   "N02",
+   "N01",
+   "N00"
+  ],
+  "verificacion": {
+   "factible": true,
+   "errores": [],
+   "prioridad": 95,
+   "cajas": 24,
+   "viaje": 61,
+   "servicio": 38,
+   "total": 99
+  }
+ },
+ "E_AMPLIADO|propuesta": {
+  "escenario_id": "E_AMPLIADO",
+  "metodo": "Propuesta: DP Held–Karp con poda",
+  "pedidos_atendidos": [
+   "P06",
+   "P08",
+   "P09",
+   "P10",
+   "P14",
+   "P15"
+  ],
+  "orden_de_descarga": [
+   "P08",
+   "P14",
+   "P10",
+   "P15",
+   "P09",
+   "P06"
+  ],
+  "recorrido": [
+   "N00",
+   "N01",
+   "N06",
+   "N11",
+   "N18",
+   "N19",
+   "N15",
+   "N14",
+   "N21",
+   "N20",
+   "N13",
+   "N09",
+   "N05",
+   "N00"
+  ],
+  "verificacion": {
+   "factible": true,
+   "errores": [],
+   "prioridad": 107,
+   "cajas": 24,
+   "viaje": 87,
+   "servicio": 38,
+   "total": 125
+  }
+ },
+ "E_AMPLIADO_BASE|referencia": {
+  "escenario_id": "E_AMPLIADO_BASE",
+  "metodo": "Referencia: greedy de inserción",
+  "pedidos_atendidos": [
+   "P01",
+   "P03",
+   "P04",
+   "P05",
+   "P06"
+  ],
+  "orden_de_descarga": [
+   "P06",
+   "P03",
+   "P04",
+   "P05",
+   "P01"
+  ],
+  "recorrido": [
+   "N00",
+   "N05",
+   "N09",
+   "N05",
+   "N06",
+   "N07",
+   "N06",
+   "N02",
+   "N01",
+   "N00"
+  ],
+  "verificacion": {
+   "factible": true,
+   "errores": [],
+   "prioridad": 71,
+   "cajas": 18,
+   "viaje": 59,
+   "servicio": 29,
+   "total": 88
+  }
+ },
+ "E_AMPLIADO_BASE|propuesta": {
+  "escenario_id": "E_AMPLIADO_BASE",
+  "metodo": "Propuesta: DP Held–Karp con poda",
+  "pedidos_atendidos": [
+   "P08",
+   "P09",
+   "P10",
+   "P13",
+   "P15"
+  ],
+  "orden_de_descarga": [
+   "P09",
+   "P15",
+   "P10",
+   "P13",
+   "P08"
+  ],
+  "recorrido": [
+   "N00",
+   "N05",
+   "N09",
+   "N13",
+   "N20",
+   "N21",
+   "N14",
+   "N15",
+   "N19",
+   "N18",
+   "N11",
+   "N06",
+   "N01",
+   "N00"
+  ],
+  "verificacion": {
+   "factible": true,
+   "errores": [],
+   "prioridad": 81,
+   "cajas": 18,
+   "viaje": 87,
+   "servicio": 29,
+   "total": 116
+  }
+ }
+}

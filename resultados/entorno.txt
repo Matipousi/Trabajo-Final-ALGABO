@@ -1,0 +1,4 @@
+Python 3.15.2 (CPython)
+Sistema: macOS-27.3-arm64-arm-64bit-Mach-O
+Procesador: arm64 arm
+Medición: time.perf_counter, ms; 5 repeticiones por escenario (mediana); 1 por instancia aleatoria. Incluye construir_instancia (Dijkstra) + método.

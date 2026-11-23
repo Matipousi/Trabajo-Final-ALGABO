@@ -1,0 +1,7 @@
+escenario_id,descripcion,deposito_id,capacidad_cajas,limite_tiempo_min,pedidos_incluidos,conexiones_cerradas
+E_BASE,Condiciones de referencia,N00,18,130,P01-P10,ninguna
+E_CAPACIDAD,Menor capacidad de carga,N00,12,130,P01-P10,ninguna
+E_TIEMPO,Menor tiempo disponible,N00,18,95,P01-P10,ninguna
+E_CIERRE,E_TIEMPO con la salida directa N00-N05 cerrada,N00,18,95,P01-P10,C25
+E_AMPLIADO,Red con barrio nuevo y mas recursos,N00,24,160,P01-P16,ninguna
+E_AMPLIADO_BASE,Red con barrio nuevo y limites de E_BASE,N00,18,130,P01-P16,ninguna
